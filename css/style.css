@@ -1,0 +1,477 @@
+/* css/style.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- 1. Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* --- 2. Global Setup with Dark Mode --- */
+:root {
+    --primary-color: #6f42c1;
+    --primary-dark: #5a32a3;
+    --bg-light: linear-gradient(135deg, #f5f7fa 0%, #e8ecf5 100%);
+    --bg-dark: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+    --card-light: #ffffff;
+    --card-dark: #2d3561;
+    --text-light: #333333;
+    --text-dark: #E6E6E9;
+    --input-light: #e0e0e0;
+    --input-dark: #404570;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    transition: background 0.4s ease;
+    color: var(--text-light);
+}
+
+body.dark-mode {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+/* --- 3. Navbar Styling --- */
+.navbar-custom {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    padding: 15px 40px;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(111, 66, 193, 0.3);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .navbar-custom {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: 800;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    color: white !important;
+    font-weight: 600;
+    margin: 0 15px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-link:hover {
+    transform: translateY(-2px);
+}
+
+.nav-icons {
+    color: white;
+    font-size: 1.2rem;
+    gap: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.nav-icons i {
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.nav-icons i:hover {
+    transform: scale(1.15) rotate(10deg);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#themeToggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#themeToggle:hover {
+    transform: scale(1.15) rotate(20deg);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* --- 4. Main Layout Wrapper --- */
+.main-wrapper {
+    flex: 1;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100%;
+    padding: 40px 20px;
+    position: relative;
+    animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- 5. The Card Design --- */
+.sb-card {
+    background: var(--card-light);
+    width: 100%;
+    max-width: 500px;
+    padding: 50px 60px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(111, 66, 193, 0.15);
+    transition: all 0.4s ease;
+    animation: slideUp 0.6s ease;
+}
+
+body.dark-mode .sb-card {
+    background: var(--card-dark);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.sb-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 70px rgba(111, 66, 193, 0.25);
+}
+
+body.dark-mode .sb-card:hover {
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sb-card h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    -webkit-background-clip: text;
+    background-clip: text; /* standard property for compatibility */
+    -webkit-text-fill-color: transparent;
+}
+
+body.dark-mode .sb-card h3 {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial; /* reset standard property */
+    -webkit-text-fill-color: var(--text-dark);
+    color: var(--text-dark);
+}
+
+/* --- 6. Input Fields with Icons --- */
+.sb-input-group {
+    position: relative;
+    margin-bottom: 25px;
+    animation: slideInUp 0.6s ease;
+    animation-fill-mode: both;
+}
+
+.sb-input-group:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.sb-input-group:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.sb-input-group:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sb-input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    z-index: 1;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.sb-input-group input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid transparent;
+    background: var(--input-light);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+body.dark-mode .sb-input-group input {
+    background: var(--input-dark);
+    color: var(--text-dark);
+}
+
+.sb-input-group input::placeholder {
+    color: #999;
+}
+
+.sb-input-group input:focus {
+    border-color: var(--primary-color);
+    background: var(--input-light);
+    box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
+    transform: translateY(-2px);
+}
+
+body.dark-mode .sb-input-group input:focus {
+    background: var(--input-dark);
+    box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.3);
+}
+
+.sb-input-group input:focus~i {
+    transform: translateY(-50%) scale(1.2);
+    color: var(--primary-dark);
+}
+
+/* --- 7. The Button --- */
+.btn-purple {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    margin-top: 15px;
+    letter-spacing: 1.5px;
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.35);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-purple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-purple:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-purple:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.5);
+}
+
+.btn-purple:active {
+    transform: translateY(-1px);
+}
+
+/* --- 8. Links and Text --- */
+.text-center {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+    font-size: 0.9rem;
+    animation: fadeIn 0.8s ease 0.5s both;
+}
+
+body.dark-mode .text-center {
+    color: var(--text-dark);
+}
+
+.text-center a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.text-center a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.text-center a:hover::after {
+    width: 100%;
+}
+
+.text-center a:hover {
+    color: var(--primary-dark);
+}
+
+.alert {
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: none;
+    animation: slideDown 0.4s ease;
+    font-weight: 500;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-danger {
+    background-color: #ffe5e5;
+    color: #c41e3a;
+}
+
+.alert-success {
+    background-color: #e5ffe5;
+    color: #2d7a2d;
+}
+
+/* --- 9. Footer --- */
+.footer-custom {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    box-shadow: 0 -4px 20px rgba(111, 66, 193, 0.3);
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .footer-custom {
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* --- 10. Responsive Design --- */
+@media (max-width: 768px) {
+    .sb-card {
+        padding: 40px 30px;
+    }
+
+    .navbar-custom {
+        padding: 15px 20px;
+    }
+
+    .footer-custom {
+        padding: 15px 20px;
+        font-size: 0.85rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .nav-link {
+        margin: 0 8px;
+        font-size: 0.75rem;
+    }
+
+    .btn-purple {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+
+    .sb-card h3 {
+        font-size: 1.5rem;
+    }
+
+    .nav-icons {
+        gap: 10px;
+        font-size: 1rem;
+    }
+}
