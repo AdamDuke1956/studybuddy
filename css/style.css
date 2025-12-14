@@ -632,3 +632,11 @@ body.dark-mode .footer-custom {
 }
 
 /* test */
+
+/* --- 11. Profiles list and small components --- */
+.profiles-grid { max-width:900px; margin:0 auto; }
+.profile-card { text-decoration:none; color:inherit; }
+.small-muted { color:#7a7a7a; font-size:0.9rem; }
+
+/* subtle image placeholder */
+.img-placeholder{ display:inline-flex; align-items:center; justify-content:center; font-weight:700; color:#999; background:linear-gradient(135deg,#f0f0f0,#e8e8e8); }

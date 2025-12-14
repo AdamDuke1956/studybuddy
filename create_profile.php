@@ -19,7 +19,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="sb-card" style="max-width:700px;">
             <h3>Create Your Profile</h3>
             <p class="text-center">Tell others what you're good at so they can collaborate with you.</p>
-            <form action="profile_handler.php" method="post">
+            <form action="profile_handler.php" method="post" enctype="multipart/form-data">
                 <div class="sb-input-group">
                     <i class="fas fa-pen"></i>
                     <textarea name="bio" placeholder="Short bio / description" rows="4" style="padding:15px 15px 15px 45px; width:100%; border-radius:12px; border:2px solid transparent; resize:vertical;"></textarea>
@@ -46,6 +46,10 @@ if (!isset($_SESSION['user_id'])) {
                     <label style="display:flex; gap:8px; align-items:center;"><input type="checkbox" name="leadership"> Leading groups</label>
                 </div>
 
+                <div class="sb-input-group">
+                    <i class="fas fa-image"></i>
+                    <input type="file" name="profile_picture" accept="image/*" />
+                </div>
                 <button type="submit" name="create_profile" class="btn-purple">Save Profile</button>
             </form>
         </div>

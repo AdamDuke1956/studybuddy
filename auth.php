@@ -93,4 +93,80 @@ if (isset($_POST['login'])) {
         exit;
     }
 }
+
+// HANDLE EMAIL CHANGE
+if (isset($_POST['change_email'])) {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: loginpage.php?error=' . urlencode('Please log in first'));
+        exit;
+    }
+    $user_id = $_SESSION['user_id'];
+    $new_email = trim($_POST['new_email']);
+    $current_password = $_POST['current_password'] ?? '';
+    if (empty($new_email) || empty($current_password)) {
+        header('Location: account_settings.php?error=' . urlencode('Provide email and password'));
+        exit;
+    }
+    $stmt = $conn->prepare('SELECT password FROM users WHERE id = ? LIMIT 1');
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if (!$res || $res->num_rows !== 1) { header('Location: account_settings.php?error=' . urlencode('User not found')); exit; }
+    $row = $res->fetch_assoc();
+    if (!password_verify($current_password, $row['password'])) {
+        header('Location: account_settings.php?error=' . urlencode('Incorrect password'));
+        exit;
+    }
+    $u = $conn->prepare('UPDATE users SET email = ? WHERE id = ?');
+    $u->bind_param('si', $new_email, $user_id);
+    if ($u->execute()) {
+        $u->close();
+        header('Location: account_settings.php?success=' . urlencode('Email updated'));
+        exit;
+    } else {
+        header('Location: account_settings.php?error=' . urlencode('Could not update email'));
+        exit;
+    }
+}
+
+// HANDLE PASSWORD CHANGE
+if (isset($_POST['change_password'])) {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: loginpage.php?error=' . urlencode('Please log in first'));
+        exit;
+    }
+    $user_id = $_SESSION['user_id'];
+    $current = $_POST['current_password'] ?? '';
+    $newpass = $_POST['new_password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+    if (empty($current) || empty($newpass) || empty($confirm)) {
+        header('Location: account_settings.php?error=' . urlencode('Fill all password fields'));
+        exit;
+    }
+    if ($newpass !== $confirm) {
+        header('Location: account_settings.php?error=' . urlencode('Passwords do not match'));
+        exit;
+    }
+    $stmt = $conn->prepare('SELECT password FROM users WHERE id = ? LIMIT 1');
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if (!$res || $res->num_rows !== 1) { header('Location: account_settings.php?error=' . urlencode('User not found')); exit; }
+    $row = $res->fetch_assoc();
+    if (!password_verify($current, $row['password'])) {
+        header('Location: account_settings.php?error=' . urlencode('Incorrect current password'));
+        exit;
+    }
+    $hash = password_hash($newpass, PASSWORD_DEFAULT);
+    $u = $conn->prepare('UPDATE users SET password = ? WHERE id = ?');
+    $u->bind_param('si', $hash, $user_id);
+    if ($u->execute()) {
+        $u->close();
+        header('Location: account_settings.php?success=' . urlencode('Password changed'));
+        exit;
+    } else {
+        header('Location: account_settings.php?error=' . urlencode('Could not update password'));
+        exit;
+    }
+}
 ?>
