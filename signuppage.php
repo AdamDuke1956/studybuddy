@@ -37,6 +37,19 @@
                     <i class="fas fa-user"></i>
                     <input type="text" name="fullname" placeholder="Name" required>
                 </div>
+                <div class="sb-input-group role-toggle">
+                    <i class="fas fa-user-graduate"></i>
+                    <div class="role-toggle-buttons">
+                        <label class="role-pill">
+                            <input type="radio" id="role-student" name="role" value="student" checked>
+                            <i class="fas fa-user-graduate"></i>Student
+                        </label>
+                        <label class="role-pill">
+                            <input type="radio" id="role-lecturer" name="role" value="lecturer">
+                            <i class="fas fa-chalkboard-teacher"></i>Lecturer
+                        </label>
+                    </div>
+                </div>
                 <div class="sb-input-group">
                     <i class="fas fa-envelope"></i>
                     <input type="email" name="email" placeholder="Email" required>

@@ -300,6 +300,161 @@ body.dark-mode .sb-input-group input:focus {
     color: var(--primary-dark);
 }
 
+/* Role toggle (pill-style) */
+.role-toggle {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.role-toggle .role-toggle-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+    flex-wrap: nowrap;
+}
+/* hide the left absolute icon placed by .sb-input-group for this row */
+.role-toggle > i {
+    display: none;
+}
+.role-toggle .role-toggle-buttons {
+    margin-left: 45px; /* align with input fields that have left icon spacing */
+}
+
+.role-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: 2px solid rgba(111,66,193,0.2);
+    background: transparent;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+/* hide native radios */
+.role-pill input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.role-pill:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(111,66,193,0.15);
+}
+
+.role-pill:has(input[type="radio"]:checked) {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 6px 20px rgba(111,66,193,0.35);
+    transform: translateY(-2px);
+}
+
+/* icon inside pill */
+.role-pill i {
+    margin-right: 10px;
+    font-size: 1.05rem;
+    width: 18px;
+    text-align: center;
+    color: rgba(111,66,193,0.95);
+}
+.role-pill:has(input[type="radio"]:checked) i {
+    color: #fff;
+}
+
+body.dark-mode .role-pill {
+    border-color: rgba(255,255,255,0.15);
+    color: var(--text-dark);
+}
+
+body.dark-mode .role-pill:hover {
+    border-color: rgba(255,255,255,0.3);
+}
+
+body.dark-mode .role-pill:has(input[type="radio"]:checked) {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* ensure pills don't wrap awkwardly on very small screens */
+@media (max-width: 420px) {
+    .role-toggle {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .role-toggle .role-toggle-buttons {
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .role-pill { 
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+body.dark-mode .role-pill {
+    border-color: rgba(255,255,255,0.15);
+    color: var(--text-dark);
+}
+
+body.dark-mode .role-pill:hover {
+    border-color: rgba(255,255,255,0.3);
+}
+
+body.dark-mode .role-toggle input[type="radio"]:checked + .role-pill {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* ensure pills don't wrap awkwardly on very small screens */
+@media (max-width: 420px) {
+    .role-toggle {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .role-toggle .role-toggle-buttons {
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .role-pill { 
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+body.dark-mode .role-pill {
+    border-color: rgba(255,255,255,0.06);
+    color: var(--text-dark);
+}
+body.dark-mode .role-toggle input[type="radio"]:checked + .role-pill {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+/* ensure pills don't wrap awkwardly on very small screens */
+@media (max-width: 420px) {
+    .role-toggle .role-toggle-buttons {
+        gap: 8px;
+        margin-left: 20px;
+    }
+    .role-pill { min-width: 90px; padding: 8px 12px; }
+}
+
 /* --- 7. The Button --- */
 .btn-purple {
     width: 100%;
