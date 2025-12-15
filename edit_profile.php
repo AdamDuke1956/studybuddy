@@ -5,7 +5,11 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: loginpage.php?error=' . urlencode('Please log in first'));
     exit;
 }
-$user_id = $_SESSION['user_id'];
+$user_id = (int)$_SESSION['user_id'];
+if (isset($_GET['id']) && (int)$_GET['id'] !== $user_id) {
+    header('Location: profile_view.php?id=' . $user_id . '&error=' . urlencode('You can only edit your own profile'));
+    exit;
+}
 $stmt = $conn->prepare("SELECT bio, skills, programming_level, good_writing, leadership, profile_picture FROM profiles WHERE user_id = ? LIMIT 1");
 $bio = $skills = $programming_level = '';
 $good_writing = $leadership = 0;
@@ -37,6 +41,18 @@ if ($stmt) {
 </head>
 <body>
     <div class="main-wrapper">
+        <div style="max-width:700px; margin:0 auto 12px auto; display:flex; justify-content:space-between; align-items:center;">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-label="User menu"><i class="fas fa-gear"></i></button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="profile_view.php?id=<?php echo $user_id; ?>">View profile</a></li>
+                    <li><a class="dropdown-item" href="account_settings.php">Account settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="logout.php">Log out</a></li>
+                </ul>
+            </div>
+        </div>
         <div class="sb-card" style="max-width:700px;">
             <h3>Edit Your Profile</h3>
             <form action="profile_handler.php" method="post" enctype="multipart/form-data">

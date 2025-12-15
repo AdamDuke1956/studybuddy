@@ -16,6 +16,18 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 <body>
     <div class="main-wrapper">
+        <div style="max-width:700px; margin:0 auto 12px auto; display:flex; justify-content:space-between; align-items:center;">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-label="User menu"><i class="fas fa-gear"></i></button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="edit_profile.php">Edit profile</a></li>
+                    <li><a class="dropdown-item" href="account_settings.php">Account settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="logout.php">Log out</a></li>
+                </ul>
+            </div>
+        </div>
         <div class="sb-card" style="max-width:700px;">
             <h3>Create Your Profile</h3>
             <p class="text-center">Tell others what you're good at so they can collaborate with you.</p>

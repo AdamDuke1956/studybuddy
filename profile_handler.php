@@ -8,7 +8,11 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_POST['create_profile'])) {
-    $user_id = $_SESSION['user_id'];
+    $user_id = (int)$_SESSION['user_id'];
+    if (isset($_POST['user_id']) && (int)$_POST['user_id'] !== $user_id) {
+        header('Location: profile_view.php?id=' . $user_id . '&error=' . urlencode('You can only update your own profile'));
+        exit;
+    }
     $bio = trim($_POST['bio']);
     $skills = trim($_POST['skills']);
     $programming_level = in_array($_POST['programming_level'] ?? 'none', ['none','beginner','intermediate','advanced','expert']) ? $_POST['programming_level'] : 'none';
