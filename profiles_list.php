@@ -2,11 +2,70 @@
 include 'db_conn.php';
 session_start();
 
-// Fetch random users with profiles
-$stmt = $conn->prepare("SELECT u.id, u.full_name, u.role, p.programming_level, p.profile_picture FROM users u LEFT JOIN profiles p ON u.id = p.user_id ORDER BY RAND() LIMIT 100");
+// Optional filters
+$q = trim($_GET['q'] ?? '');
+$level = trim($_GET['level'] ?? '');
+$role = trim($_GET['role'] ?? '');
+$sort = trim($_GET['sort'] ?? '');
+
+// Check if ratings table exists for safe fallback
+$hasRatings = false;
+$tblCheck = $conn->query("SHOW TABLES LIKE 'collaboration_ratings'");
+if ($tblCheck && $tblCheck->num_rows === 1) { $hasRatings = true; }
+
+$select = "SELECT u.id, u.full_name, u.role, p.programming_level, p.profile_picture";
+if ($hasRatings) {
+    $select .= ", ROUND(COALESCE(AVG(cr.coding),0),1) AS avg_coding, ROUND(COALESCE(AVG(cr.report_writing),0),1) AS avg_report, COUNT(cr.id) AS rating_count";
+}
+
+$sql = $select . " FROM users u LEFT JOIN profiles p ON u.id = p.user_id";
+if ($hasRatings) { $sql .= " LEFT JOIN collaboration_ratings cr ON cr.ratee_id = u.id"; }
+
+$where = [];
+$types = '';
+$params = [];
+
+if ($q !== '') {
+    $where[] = "(u.full_name LIKE ? OR p.skills LIKE ?)";
+    $types .= 'ss';
+    $like = '%' . $q . '%';
+    $params[] = $like; $params[] = $like;
+}
+if ($level !== '') {
+    $where[] = "p.programming_level = ?";
+    $types .= 's';
+    $params[] = $level;
+}
+if ($role !== '') {
+    $where[] = "u.role = ?";
+    $types .= 's';
+    $params[] = $role;
+}
+
+if (!empty($where)) { $sql .= " WHERE " . implode(' AND ', $where); }
+
+if ($hasRatings) { $sql .= " GROUP BY u.id"; }
+
+// Sorting
+if ($sort === 'best_coding' && $hasRatings) {
+    $sql .= " ORDER BY avg_coding DESC, rating_count DESC";
+} elseif ($sort === 'best_writing' && $hasRatings) {
+    $sql .= " ORDER BY avg_report DESC, rating_count DESC";
+} elseif ($sort === 'most_rated' && $hasRatings) {
+    $sql .= " ORDER BY rating_count DESC, avg_coding DESC";
+} else {
+    $sql .= " ORDER BY u.id DESC"; // stable default
+}
+
+$sql .= " LIMIT 100";
+
+$stmt = $conn->prepare($sql);
+if ($stmt === false) { die('Server error'); }
+if (!empty($params)) { $stmt->bind_param($types, ...$params); }
 $stmt->execute();
 $res = $stmt->get_result();
-$profiles = $res->fetch_all(MYSQLI_ASSOC);
+$profiles = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html>
@@ -175,6 +234,9 @@ $profiles = $res->fetch_all(MYSQLI_ASSOC);
             margin-bottom:20px;
             animation:slideDown 0.5s ease;
         }
+
+        .filters{background:var(--card-light);border-radius:12px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08);margin-bottom:18px;}
+        body.dark-mode .filters{background:var(--card-dark);}        
     </style>
 </head>
 <body>
@@ -197,6 +259,47 @@ $profiles = $res->fetch_all(MYSQLI_ASSOC);
             <h2><i class="fas fa-users"></i> Discover Study Buddies</h2>
             <p>Connect with classmates who match your skills and goals</p>
         </div>
+
+        <form class="filters" method="get" action="profiles_list.php">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Search name or skills</label>
+                    <input class="form-control" name="q" value="<?php echo htmlspecialchars($q); ?>" placeholder="e.g. PHP, Java, Databases">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Programming level</label>
+                    <select class="form-select" name="level">
+                        <option value="">Any</option>
+                        <option value="none" <?php echo $level==='none'?'selected':''; ?>>None</option>
+                        <option value="beginner" <?php echo $level==='beginner'?'selected':''; ?>>Beginner</option>
+                        <option value="intermediate" <?php echo $level==='intermediate'?'selected':''; ?>>Intermediate</option>
+                        <option value="advanced" <?php echo $level==='advanced'?'selected':''; ?>>Advanced</option>
+                        <option value="expert" <?php echo $level==='expert'?'selected':''; ?>>Expert</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Role</label>
+                    <select class="form-select" name="role">
+                        <option value="">Any</option>
+                        <option value="student" <?php echo $role==='student'?'selected':''; ?>>Student</option>
+                        <option value="lecturer" <?php echo $role==='lecturer'?'selected':''; ?>>Lecturer</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sort</label>
+                    <select class="form-select" name="sort">
+                        <option value="">Latest</option>
+                        <option value="best_coding" <?php echo $sort==='best_coding'?'selected':''; ?>>Best Coding</option>
+                        <option value="best_writing" <?php echo $sort==='best_writing'?'selected':''; ?>>Best Report Writing</option>
+                        <option value="most_rated" <?php echo $sort==='most_rated'?'selected':''; ?>>Most Rated</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-purple">Apply</button>
+                    <a class="btn btn-outline-secondary" href="profiles_list.php">Reset</a>
+                </div>
+            </div>
+        </form>
         
         <div class="profiles-waterfall" id="profilesContainer">
             <?php foreach($profiles as $p): ?>
@@ -215,6 +318,13 @@ $profiles = $res->fetch_all(MYSQLI_ASSOC);
                                 <span><i class="fas fa-user-tag"></i> <?php echo htmlspecialchars($p['role'] ?? 'Student'); ?></span>
                             </div>
                             <span class="badge-skill"><?php echo htmlspecialchars($p['programming_level'] ?? 'Beginner'); ?></span>
+                            <?php if (isset($p['rating_count'])): ?>
+                                <div class="mt-1" style="font-size:0.9rem;">
+                                    <span class="badge bg-light text-dark">Coding <?php echo number_format((float)($p['avg_coding'] ?? 0),1); ?>★</span>
+                                    <span class="badge bg-light text-dark">Report <?php echo number_format((float)($p['avg_report'] ?? 0),1); ?>★</span>
+                                    <span class="badge bg-secondary"><?php echo (int)($p['rating_count'] ?? 0); ?> ratings</span>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </a>

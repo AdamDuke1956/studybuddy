@@ -3,6 +3,7 @@ include 'db_conn.php';
 session_start();
 // view profile by ?id=
 $view_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$viewer_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 if ($view_id <= 0) {
     echo 'Invalid profile id';
     exit;
@@ -264,6 +265,8 @@ $row = $res->fetch_assoc();
 </head>
 <body>
     <div class="profile-wrapper">
+        <?php if (isset($_GET['error'])): ?><div class="alert alert-danger"><?php echo htmlspecialchars($_GET['error']); ?></div><?php endif; ?>
+        <?php if (isset($_GET['success'])): ?><div class="alert alert-success"><?php echo htmlspecialchars($_GET['success']); ?></div><?php endif; ?>
         <div class="top-controls">
             <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -365,6 +368,36 @@ $row = $res->fetch_assoc();
                 </div>
             <?php endif; ?>
         </div>
+
+        <?php if ($viewer_id && $viewer_id !== $view_id): ?>
+        <div class="info-section" style="margin-top:20px;">
+            <h4><i class="fas fa-handshake"></i> Collaborate on an assignment</h4>
+            <form action="collab_actions.php" method="post" class="row g-2">
+                <input type="hidden" name="action" value="send_request">
+                <input type="hidden" name="target_user_id" value="<?php echo $view_id; ?>">
+                <div class="col-md-6">
+                    <label class="form-label">Assignment title *</label>
+                    <input class="form-control" name="assignment_title" placeholder="e.g. PHP Mini Project" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Course</label>
+                    <input class="form-control" name="course" placeholder="Programming Course">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Subjects / tech stack</label>
+                    <input class="form-control" name="subjects" placeholder="database sql, php, java">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" name="description" rows="3" placeholder="Share what you want to work on and expectations"></textarea>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-purple" type="submit">Send request</button>
+                    <a class="btn btn-outline-secondary" href="collab_requests.php">View my requests</a>
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

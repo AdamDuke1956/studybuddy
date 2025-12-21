@@ -56,6 +56,7 @@ if ((int)$profile['leadership'] === 1) { $traits[] = 'Leadership'; }
                 <div class="navbar-nav">
                     <a class="nav-link active" href="student.php">DASHBOARD</a>
                     <a class="nav-link" href="profiles_list.php">BROWSE</a>
+                    <a class="nav-link" href="collaborations.php">COLLABS</a>
                     <a class="nav-link" href="profile_view.php?id=<?php echo $userId; ?>">MY PROFILE</a>
                 </div>
             </div>
@@ -123,6 +124,8 @@ if ((int)$profile['leadership'] === 1) { $traits[] = 'Leadership'; }
                     <h5>Quick links</h5>
                     <ul class="mb-0">
                         <li><a href="profiles_list.php">Browse members</a></li>
+                        <li><a href="collab_requests.php">Collab requests</a></li>
+                        <li><a href="collaborations.php">My collaborations</a></li>
                         <li><a href="profile_view.php?id=<?php echo $userId; ?>">View my profile</a></li>
                         <li><a href="edit_profile.php">Edit profile</a></li>
                         <li><a href="account_settings.php">Account settings</a></li>
